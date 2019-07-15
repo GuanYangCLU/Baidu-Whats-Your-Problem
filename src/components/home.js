@@ -1,21 +1,26 @@
 import React, { useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { loadUser, login } from '../redux/action-creators/login';
+import { loadUser, logout } from '../redux/action-creators/login';
 import { getProblems } from '../redux/action-creators/problems';
 
-const Home = ({ isAuthenticated, username, getProblems, problems }) => {
-  if (localStorage.token) {
-    // loadUser(localStorage.token);
-  }
-
-  useEffect(() => getProblems()); // add logic: if auth, THEN load
+const Home = ({ isAuthenticated, getProblems, problems, loadUser, logout }) => {
+  useEffect(() => {
+    // console.log('token: ' + localStorage.getItem('token'));
+    loadUser();
+    if (isAuthenticated) {
+      getProblems();
+    }
+  }); // add logic: if auth, THEN load
 
   return (
     <div>
       {isAuthenticated ? (
         <div className='nav'>
           <div>
+            <div>
+              <button onClick={logout}>Logout</button>
+            </div>
             <div>
               <ul>
                 {problems.map(problem => {
@@ -56,8 +61,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadUser: token => dispatch(loadUser(token)),
-    getProblems: () => dispatch(getProblems())
+    loadUser: () => dispatch(loadUser()),
+    getProblems: () => dispatch(getProblems()),
+    logout: () => dispatch(logout())
   };
 };
 

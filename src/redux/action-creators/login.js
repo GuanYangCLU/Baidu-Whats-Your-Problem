@@ -9,11 +9,11 @@ const loginStart = () => {
   };
 };
 
-const loginSuccess = res => {
-  console.log('login success!', res);
+const loginSuccess = data => {
+  console.log('login success!', data);
   return {
     type: 'LOGIN_SUCCESS',
-    payload: {}
+    payload: { username: data.username }
   };
 };
 
@@ -49,6 +49,24 @@ export const login = (username, password) => async dispatch => {
   }
 };
 
-export const loadUser = token => dispatch => {
-  //
+export const loadUser = () => dispatch => {
+  // let user be authenticated everytime the token exist, in each Components
+  // once send loadUser, get authenticated automatically
+
+  // console.log('user load here ' + localStorage.token);
+  if (localStorage.token) {
+    dispatch({
+      type: 'LOAD_USER',
+      payload: { token: localStorage.token }
+    });
+  }
+};
+
+export const logout = () => dispatch => {
+  if (localStorage.token) {
+    dispatch({
+      type: 'LOGOUT',
+      payload: {} //token: ''
+    });
+  }
 };

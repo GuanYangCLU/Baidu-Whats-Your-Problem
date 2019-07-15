@@ -3,17 +3,18 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
 import { login } from '../redux/action-creators/login';
 
-const handleSubmit = (e, login, { formData }, setFormData) => {
-  e.preventDefault();
-  // console.log(formData.username, formData.password);
-  // console.log(e.target);
-  login(formData.username, formData.password);
-  // setFormData({ username: '', password: '' });
-};
-
 const Login = ({ isAuthenticated, isLoading, username, login }) => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   // console.log(isAuthenticated, isLoading, status, username);
+
+  const handleSubmit = (e, { formData }) => {
+    e.preventDefault();
+    // console.log(formData.username, formData.password);
+    // console.log(e.target);
+    login(formData.username, formData.password);
+    // setFormData({ username: '', password: '' });
+  };
+
   return (
     <div>
       {isLoading ? (
@@ -31,9 +32,7 @@ const Login = ({ isAuthenticated, isLoading, username, login }) => {
         />
       ) : (
         <div>
-          <form
-            onSubmit={e => handleSubmit(e, login, { formData }, setFormData)}
-          >
+          <form onSubmit={e => handleSubmit(e, { formData })}>
             <div>
               username:{' '}
               <input

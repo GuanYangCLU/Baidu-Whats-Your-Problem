@@ -127,7 +127,7 @@ export const getSolution = (id, answer) => dispatch => {
       config
     )
     .then(res => {
-      console.log('Inner res: ', res.data);
+      //   console.log('Inner res: ', res.data);
       dispatch(getSolutionSuccess(res.data));
     })
     .catch(err => {

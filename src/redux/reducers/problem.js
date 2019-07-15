@@ -1,5 +1,7 @@
 const initState = {
-  isLoading: false
+  isLoading: false,
+  title: '',
+  content: ''
 };
 
 const problem = (state = initState, action) => {
