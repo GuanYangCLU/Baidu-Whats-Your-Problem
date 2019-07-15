@@ -1,4 +1,5 @@
-import { users } from '../../config/fakedb';
+// import { users } from '../../config/fakedb';
+import axios from 'axios';
 
 const loginStart = () => {
   console.log('login start!');
@@ -8,35 +9,46 @@ const loginStart = () => {
   };
 };
 
-const loginSuccess = (status, username) => {
-  console.log('login success!');
+const loginSuccess = res => {
+  console.log('login success!', res);
   return {
     type: 'LOGIN_SUCCESS',
-    payload: { status: status, username: username }
+    payload: {}
   };
 };
 
 const loginError = err => {
-  console.log('login error!');
+  console.log('login error!', err);
   return {
     type: 'LOGIN_ERROR',
     payload: { error: err }
   };
 };
 
-export const login = (username, password) => dispatch => {
+export const login = (username, password) => async dispatch => {
   dispatch(loginStart());
-  console.log('login start!');
-  const rs = users.filter(user => {
-    return user.username === username && user.password === password;
-  });
-  if (rs.length > 0) {
-    if (rs[0].status === 'admin') {
-      dispatch(loginSuccess(rs[0].status, rs[0].username));
-    } else if (rs[0].status === 'user') {
-      dispatch(loginSuccess(rs[0].status, rs[0].username));
+  // console.log('login start!');
+
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
     }
-  } else {
-    dispatch(loginError('No user found or password does not match'));
+  };
+  const body = JSON.stringify({ username, password });
+
+  try {
+    const res = await axios.post(
+      'http://api.haochuan.io/login?noError=1',
+      body,
+      config
+    );
+    dispatch(loginSuccess(res.data));
+    // res.data: {username: xx, password: xx}
+  } catch (err) {
+    dispatch(loginError(err));
   }
+};
+
+export const loadUser = token => dispatch => {
+  //
 };

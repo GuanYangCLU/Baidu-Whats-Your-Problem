@@ -5,13 +5,13 @@ import { login } from '../redux/action-creators/login';
 
 const handleSubmit = (e, login, { formData }, setFormData) => {
   e.preventDefault();
-  console.log(formData.username, formData.password);
+  // console.log(formData.username, formData.password);
   // console.log(e.target);
   login(formData.username, formData.password);
   // setFormData({ username: '', password: '' });
 };
 
-const Login = ({ isAuthenticated, isLoading, status, username, login }) => {
+const Login = ({ isAuthenticated, isLoading, username, login }) => {
   const [formData, setFormData] = useState({ username: '', password: '' });
   // console.log(isAuthenticated, isLoading, status, username);
   return (
@@ -19,29 +19,16 @@ const Login = ({ isAuthenticated, isLoading, status, username, login }) => {
       {isLoading ? (
         <div>Loading...</div>
       ) : isAuthenticated ? (
-        status === 'admin' ? (
-          <Redirect
-            to={{
-              pathname: '/list',
-              state: {
-                status: 'admin',
-                username: username,
-                isAuthenticated: true
-              }
-            }}
-          />
-        ) : (
-          <Redirect
-            to={{
-              pathname: `/${username}`,
-              state: {
-                status: 'user',
-                username: username,
-                isAuthenticated: true
-              }
-            }}
-          />
-        )
+        <Redirect
+          to={{
+            pathname: '/',
+            state: {
+              // status: 'user',
+              username: username,
+              isAuthenticated: true
+            }
+          }}
+        />
       ) : (
         <div>
           <form
@@ -82,7 +69,7 @@ const mapStateToProps = state => {
   return {
     isAuthenticated: state.login.isAuthenticated,
     isLoading: state.login.isLoading,
-    status: state.login.status,
+    // status: state.login.status,
     username: state.login.username
   };
 };

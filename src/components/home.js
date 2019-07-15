@@ -1,33 +1,40 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { loadUser, login } from '../redux/action-creators/login';
+import { getProblems } from '../redux/action-creators/problems';
 
-const Home = ({ isAuthenticated, username }) => {
+const Home = ({ isAuthenticated, username, getProblems, problems }) => {
   if (localStorage.token) {
-    loadUser(localStorage.token);
+    // loadUser(localStorage.token);
   }
+
+  useEffect(() => getProblems()); // add logic: if auth, THEN load
 
   return (
     <div>
       {isAuthenticated ? (
         <div className='nav'>
-          <ul>
-            <li>Register Comming Soon</li>
-            <li>
-              <Link
-                to={{
-                  pathname: '/login',
-                  state: {
-                    isAuthenticated: isAuthenticated,
-                    username: username
-                  }
-                }}
-              >
-                Login
-              </Link>
-            </li>
-          </ul>
+          <div>
+            <div>
+              <ul>
+                {problems.map(problem => {
+                  return (
+                    <li key={problem.id}>
+                      <Link
+                        to={{
+                          pathname: `/${problem.id}`,
+                          state: { id: problem.id }
+                        }}
+                      >
+                        {problem.title}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          </div>
         </div>
       ) : (
         <Redirect
@@ -42,13 +49,15 @@ const Home = ({ isAuthenticated, username }) => {
 
 const mapStateToProps = state => {
   return {
-    isAuthenticated: state.login.isAuthenticated
+    isAuthenticated: state.login.isAuthenticated,
+    problems: state.problems.problems // return format: problems:[{},{},...]
   };
 };
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadUser: token => dispatch(loadUser(token))
+    loadUser: token => dispatch(loadUser(token)),
+    getProblems: () => dispatch(getProblems())
   };
 };
 
